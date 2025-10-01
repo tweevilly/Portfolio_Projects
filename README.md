@@ -23,20 +23,14 @@
     Salt Lake City Downtown Map (.docx).
 
 # Project Objectives
-    Implement a program that loads and delivers 40 packages using limited truck and driver resources
-    
-    Account for various delivery constraints including delays, deadlines, grouped deliveries, and incorrect addresses
-    
-    Use a custom-built hash table for efficient package management
-    
-    Simulate time and calculate accurate delivery timestamps for each package
-    
-    Ensure the total mileage does not exceed 140 miles
-    
-    Provide User Interface:    
-        Delivery status of any package at any time
-        Summary of total mileage
-        Status of all trucks and their delivery progress
+    Implement a program that loads and delivers 40 packages using limited truck and driver resources.    
+    Account for various delivery constraints including delays, deadlines, grouped deliveries, and incorrect addresses.    
+    Use a custom-built hash table for efficient package management.    
+    Simulate time and calculate accurate delivery timestamps for each package.    
+    Ensure the total mileage does not exceed 140 miles.    
+    Provide User Interface:     Delivery status of any package at any time
+                                Summary of total mileage
+                                Status of all trucks and their delivery progress
         
 # Constraints and Assumptions
     Truck :
@@ -73,12 +67,13 @@
         Distances are rounded to nearest tenth of a mile and used to calculate travel times at 18 mph.
 
 # Program Structure 
-    Delivery_Project
-    
-    	|-Main.py                    (Entry point of the program and overall control flow)
-    	|-CreateHashMap.py           (Implements the custom hash table used for efficient package lookup)          
-    	|-Package.py                 (Handles package-related classes and methods)
-    	|-Truck.py                   (Contains the data structures related to truck operations and delivery)
+The codebase is separated into distinct components, each with a single responsibility, making the system easier to understand, debug, and extend. 
+
+    Delivery_Project    
+    	|-Main.py                    # Entry point, manages control flow, routing logic, and user interface
+    	|-CreateHashMap.py           # Implements the custom hash table used for efficient package lookup          
+    	|-Package.py                 # Logic for status updates and package behavior
+    	|-Truck.py                   # Modeling truck attributes and current state
     	|-CSV
     	|	|-Address_File.csv
     	|	|-Distance_File.csv
@@ -100,46 +95,68 @@
     Salt Lake City (.docx) :
         Downtown Map (used as visual reference, not directly parsed)
 
+# Algorithm and Strategy 
+    Package class (Conditional Time-based Status Logic)
+            Initializes package properties
+            Converts object to a readable string.
+            Determines real-time package status based on delivery timeline.
+            
+    Truck Class (Object Construction)
+            Tracks truck capacity, speed, mileage, and current time.
+            Stores assigned package IDs and tracks delivery progression.
+            Integrates with routing logic in Main.py
 
+    Hash Map (Custom Hash Map, linear probing)
+              Hash table stores all package data
+              Constant-time retrieval    
+              Efficient status updates
+              Real-time delivery tracking    
+              Flexible querying by package ID or by time  
+                                                    
+    Package-Truck Assignment Strategy (Rule-Based constraint checking and Greedy approach)    
+            Constraint prioritization :     Packages that must go on Truck 2 are loaded first.
+                                            Delayed packages loaded onto Truck 2 and Truck 3, which depart later.
+                                            Grouped packages are assigned together to the same truck.
+                                            Packages with a early deadlines like 9:00 AM or 10:30 AM are prioritized on Truck 1.
+            Balancing the load:             Remaining packages are distributed using Greedy to keep truck loads balanced, limit 16.            
+             
+    Delivery Algorithm (Greedy Nearest Neighbor approach)  
+            The truck selects the closest delivery address from its current location.    
+            The package with the shortest distance is delivered next.    
+            Mileage and delivery time are updated based on the truck’s speed (18 mph).    
+            The delivery timestamp is stored in the package object for future lookup.      
+            Trucks leave the hub at fixed times:    Truck 1: 8:00 AM    
+                                                    Truck 2: 9:05 AM    
+                                                    Truck 3: 10:20 AM     
+            Truck 3's departure is dynamically adjusted to the earliest return of truck 1 or 2.   
+                                    
+    User Interface (Event Driven and Time Comparison)    
+            Main :    Western Governors University Parcel Service (WGUPS)
+                      total mileage for all trucks
+                      time of last delivery
+            Menu :    command-line interface   
+                      view delivery status of package, solo or all
+                      track status based on timestamps
+                      check truck package assignments
+                      esc - quit program
 
+# How to Run
+    Clone the repo:
+    git clone https://github.com/tweevilly/WGUPS_Routing_Program.git
+    cd WGUPS_Routing_Program
+    python Main.py
 
+# Requirements
+    Python 3.11+
+    No external libraries required
 
+# Testing
+    All packages met delivery deadlines
+    Packages 'Must be delivered with' requirements satisfied
+    Status of packages (6, 25, 28, 32) displayed 'Delayed' until 9:20
+    Package #9 address updated at 10:20, package delivered at 11:36
+    Total mileage is 98.50 miles
+    Hash table retrieval and status tracking verified
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
+# Future Improvements 
+    Remove hardcode delivery constraints 
