@@ -1,5 +1,3 @@
-# Author : Thuy-Vi Hatfield
-# Student ID : 011650621
 # Title : C950 WGUPS Routing Program 
 
 import csv
